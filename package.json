@@ -1,0 +1,14 @@
+{
+  "name": "meshblu-authenticator-azure-ad",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:octoblu/meshblu-authenticator-azure-ad.git",
+  "author": "sqrtofsaturn <sqrtofsaturn@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "compile": "coffee --compile --print command.coffee"
+  },
+  "dependencies": {
+    "coffeescript": "next"
+  }
+}

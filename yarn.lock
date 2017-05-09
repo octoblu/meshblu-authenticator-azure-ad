@@ -2268,11 +2268,10 @@ vary@^1, vary@~1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.1.tgz#67535ebb694c1d52257457984665323f587e8d37"
 
-verify-azure-ad-jwt@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/verify-azure-ad-jwt/-/verify-azure-ad-jwt-1.0.1.tgz#1c63e6662beff8d3f22a40b263d94e89790bae30"
+verify-azure-ad-jwt@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/verify-azure-ad-jwt/-/verify-azure-ad-jwt-1.0.2.tgz#728d8bd23547ed0f6b379f55770136642044f4bb"
   dependencies:
-    coffeescript next
     jsonwebtoken "^7.4.0"
     lodash "^4.17.4"
     request "^2.81.0"

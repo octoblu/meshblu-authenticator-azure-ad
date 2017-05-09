@@ -1,9 +1,8 @@
-jwt = require 'jsonwebtoken'
-_   = require 'lodash'
+_                       = require 'lodash'
 { DeviceAuthenticator } = require 'meshblu-authenticator-core'
-MeshbluHttp = require 'meshblu-http'
-request     = require 'request'
-debug       = require('debug')('meshblu-authenticator-azure-ad:authenticator-service')
+MeshbluHttp             = require 'meshblu-http'
+verifyJWT               = require 'verify-azure-ad-jwt'
+debug                   = require('debug')('meshblu-authenticator-azure-ad:authenticator-service')
 
 DEFAULT_PASSWORD = 'no-need-for-this'
 PUBLIC_KEYS_URL  = 'https://login.microsoftonline.com/common/discovery/keys'
@@ -26,17 +25,14 @@ class AuthenticatorService
     }
 
   authenticate: (accessToken, refresh_token, params, callback) =>
-    {header} = jwt.decode accessToken, complete: true
-    @_publicKeyForKid header.kid, (error, publicKey) =>
+    verifyJWT accessToken, (error, profile) =>
       return callback error if error?
 
-      jwt.verify accessToken, publicKey, algorithms: ['RS256'], (error, profile) =>
-        return callback error if error?
-        @_ensureUser {
-          email:     profile.unique_name
-          firstName: profile.given_name
-          lastName:  profile.family_name
-        }, callback
+      @_ensureUser {
+        email:     profile.unique_name
+        firstName: profile.given_name
+        lastName:  profile.family_name
+      }, callback
 
   _createSearchId: ({ email }) =>
     debug '_createSearchId', { email }
@@ -90,24 +86,6 @@ class AuthenticatorService
       return callback error if error?
       return callback null, device if device?
       @_createUserDevice { email, firstName, lastName }, callback
-
-  _publicKeyForKid: (kid, callback) =>
-    return callback new Error 'expected kid to be a non-empty string' unless _.isString(kid) && !_.isEmpty(kid)
-
-    request @publicKeysUrl, json: true, (error, response, body) =>
-      return callback error if error?
-      return callback new Error "non 2xx response from microsoftonline: #{response.statusCode}" if response.statusCode > 299
-
-      key = _.find body.keys, {kid: kid}
-      return callback new Error 'Response from microsoftonline did not contain the kid' unless key?
-
-      publicKey = _.get(key, 'x5c.0')
-      return callback new Error 'Response from microsoftonline was malformed' unless publicKey?
-      return callback null, """
-        -----BEGIN CERTIFICATE-----
-        #{publicKey}
-        -----END CERTIFICATE-----
-      """
 
   _updateSearchTerms: ({ device, searchId }, callback) =>
     debug '_updateSearchTerms', { searchId }

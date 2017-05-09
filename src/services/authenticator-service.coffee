@@ -94,7 +94,7 @@ class AuthenticatorService
   _publicKeyForKid: (kid, callback) =>
     return callback new Error 'expected kid to be a non-empty string' unless _.isString(kid) && !_.isEmpty(kid)
 
-    request.get @publicKeysUrl, json: true, (error, response, body) =>
+    request @publicKeysUrl, json: true, (error, response, body) =>
       return callback error if error?
       return callback new Error "non 2xx response from microsoftonline: #{response.statusCode}" if response.statusCode > 299
 

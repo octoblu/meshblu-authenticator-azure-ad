@@ -6,14 +6,28 @@
   "author": "sqrtofsaturn <sqrtofsaturn@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "compile": "coffee --compile --print command.coffee"
+    "compile": "coffee --compile --print command.coffee",
+    "start": "nodemon -e js,coffee command.js",
+    "test": "mocha",
+    "test:watch": "mocha --growl --watch"
   },
   "dependencies": {
     "coffeescript": "next",
+    "debug": "^2.6.6",
     "envalid": "^3.0.0",
     "express-octoblu": "^3.0.1",
+    "jsonwebtoken": "^7.4.0",
     "lodash": "^4.17.4",
+    "meshblu-authenticator-core": "^4.1.1",
     "meshblu-config": "^7.0.0",
+    "meshblu-http": "^9.9.0",
+    "passport": "^0.3.2",
+    "passport-azure-ad-oauth2": "^0.0.4",
     "server-destroy": "^1.0.1"
+  },
+  "devDependencies": {
+    "mocha": "^3.3.0",
+    "nodemon": "^1.11.0",
+    "shmock": "^0.8.1"
   }
 }

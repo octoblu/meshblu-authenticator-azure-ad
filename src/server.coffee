@@ -1,12 +1,16 @@
-http                    = require 'http'
-enableDestroy           = require 'server-destroy'
+session                 = require 'cookie-session'
+cookieParser            = require 'cookie-parser'
 octobluExpress          = require 'express-octoblu'
+http                    = require 'http'
 passport                = require 'passport'
 AzureAdOAuth2Strategy   = require 'passport-azure-ad-oauth2'
+enableDestroy           = require 'server-destroy'
 
 AuthenticatorController = require './controllers/authenticator-controller'
 Router                  = require './router'
 AuthenticatorService    = require './services/authenticator-service'
+
+SESSION_SECRET='some-secret-that-does-not-really-matter'
 
 class Server
   constructor: ({ clientID, clientSecret, callbackURL, disableLogging, logFn, meshbluConfig, namespace, @port, privateKey, resource, tenant }) ->
@@ -27,7 +31,10 @@ class Server
     passport.use new AzureAdOAuth2Strategy({ clientID, clientSecret, callbackURL, resource, tenant }, authenticatorService.authenticate)
 
     app = octobluExpress { logFn, disableLogging }
+    app.use cookieParser()
+    app.use session @_sessionOptions()
     app.use passport.initialize()
+    app.use passport.session()
     router = new Router { authenticatorController }
     router.route app
 
@@ -39,5 +46,14 @@ class Server
 
   run: (callback) =>
     @server.listen @port, callback
+
+  _sessionOptions: =>
+    return {
+      secret: SESSION_SECRET
+      resave: false
+      saveUninitialized: true
+      secure: process.env.NODE_ENV == 'production'
+      maxAge: 60 * 60 * 1000
+    }
 
 module.exports = Server

@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "coffeescript": "next",
+    "cookie-parser": "^1.4.3",
+    "cookie-session": "^2.0.0-beta.1",
     "debug": "^2.6.6",
     "envalid": "^3.0.0",
     "express-octoblu": "^3.0.1",
